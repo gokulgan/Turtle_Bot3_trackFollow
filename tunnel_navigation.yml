@@ -1,0 +1,92 @@
+version: "3.9"
+
+
+services:
+  iki_ros:
+    image: fbe-dockerreg.rwu.de/doz-iki/staehle-vls/amr-tb3:latest
+    container_name: iki_ros2_container2
+    build:
+      context: ./
+      dockerfile: Dockerfile2
+
+    privileged: true
+    network_mode: "host"
+    ipc: "host"
+    stdin_open: true
+    tty: true
+    # runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+      - ROS_DOMAIN_ID=11
+      - ROS_LOCALHOST_ONLY=0
+      - TURTLEBOT3_MODEL=burger
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/amankhan-riyasat-pathan/iki_workspace/ros2_gg:/root
+      - /tmp/runtime-root:/tmp/runtime-root
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /usr/share/gazebo/setup.bash &&
+        export TURTLEBOT3_MODEL=burger &&
+        
+        echo starting node &&
+        cd /root &&
+        
+        source install/setup.bash &&
+        echo moving_forward &&
+        ros2 run autorace_real tunnel_navigation_srv&
+        echo strted node
+        tail -f /dev/null
+
+        "
+
+  iki_ros2:
+    image: fbe-dockerreg.rwu.de/doz-iki/staehle-vls/amr-tb3:latest
+    container_name: iki_ros2_container3
+    build:
+      context: ./
+      dockerfile: Dockerfile2
+
+    privileged: true
+    network_mode: "host"
+    ipc: "host"
+    stdin_open: true
+    tty: true
+    # runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+      - ROS_DOMAIN_ID=11
+      - ROS_LOCALHOST_ONLY=0
+      - TURTLEBOT3_MODEL=burger
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/amankhan-riyasat-pathan/iki_workspace/ros2_gg:/root
+      - /tmp/runtime-root:/tmp/runtime-root
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /usr/share/gazebo/setup.bash &&
+        export TURTLEBOT3_MODEL=burger &&
+        
+        echo starting node &&
+        cd /root &&
+        
+        source install/setup.bash &&
+        echo moving_forward &&
+
+
+        ros2 run autorace_real enter_tunnel_client_request&
+        echo trigering goal request &&
+
+        echo strted node
+        tail -f /dev/null
+
+        "
+#ros2 action send_goal /detect_white_line autorace_interfaces/action/DetectWhiteLine "{}" &&

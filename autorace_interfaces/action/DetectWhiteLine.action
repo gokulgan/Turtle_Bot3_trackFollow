@@ -1,0 +1,7 @@
+# Goal definition (empty since we just need a trigger)
+---
+# Result definition
+bool success
+---
+# Feedback definition
+bool processing
